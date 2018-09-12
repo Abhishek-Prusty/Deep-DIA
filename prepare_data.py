@@ -3,18 +3,15 @@ import numpy as np
 import random
 import glob
 import pickle
+from keras.preprocessing.image import img_to_array
+from keras.preprocessing.image import load_img
 
-X_data =[]
+
 files = glob.glob ("Challenge-3-ForTrain/train_image/*.jpg")
 count=0
-for myFile in files:
-	count+=1
-	print(count,"\n")
-	image = cv2.imread (myFile)
-	print(image.shape)
-	X_data.append(image)
 
-X_data=np.array(X_data)
+x = np.array([np.array(cv2.imread(fname,0))[:,:,np.newaxis] for fname in files])
+
 with open('data.pickle','wb') as f:
-	pickle.dump(X_data,f) 
-print('X_data shape:', np.array(X_data).shape)
+	pickle.dump(x,f) 
+print(x)

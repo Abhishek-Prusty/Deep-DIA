@@ -7,7 +7,7 @@ import numpy as np
 from keras.callbacks import TensorBoard
 import matplotlib.pyplot as plt
 import pickle
-
+from sklearn.model_selection import train_test_split
 autoencoder=model.makeModel()	
 #print(autoencoder.summary())
 autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
@@ -15,19 +15,14 @@ autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 with open('data.pickle','rb') as f:
 	data=pickle.load(f)
 
-data=np.array(data)
-#print(data.shape)
+print(data)
+x_train,_,x_test,_=train_test_split(data,data,test_size=0.20, random_state=42)
 
-x_train = x_train.astype('float32') / 255.
-x_test = x_test.astype('float32') / 255.
-x_train = np.reshape(x_train, (len(x_train), 28, 28, 1))
-x_test = np.reshape(x_test, (len(x_test), 28, 28, 1))  
-
-autoencoder.fit(x_train, x_train,
+autoencoder.fit(x_train[0], x_train[0],
                 epochs=50,
                 batch_size=128,
                 shuffle=True,
-                validation_data=(x_test, x_test),
+                validation_data=(x_test[0], x_test[0]),
                 callbacks=[TensorBoard(log_dir='/tmp/autoencoder')])
 decoded_imgs = autoencoder.predict(x_test)
 
