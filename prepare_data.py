@@ -12,6 +12,6 @@ count=0
 
 x = np.array([np.array(cv2.imread(fname,0))[:,:,np.newaxis] for fname in files])
 
-with open('data.pickle','wb') as f:
+with open('data_arr.pickle','wb') as f:
 	pickle.dump(x,f) 
 print(x)

@@ -12,7 +12,7 @@ autoencoder=model.makeModel()
 #print(autoencoder.summary())
 autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 
-with open('data.pickle','rb') as f:
+with open('data_arr.pickle','rb') as f:
 	data=pickle.load(f)
 
 print(data)
@@ -24,6 +24,7 @@ autoencoder.fit(x_train[0], x_train[0],
                 shuffle=True,
                 validation_data=(x_test[0], x_test[0]),
                 callbacks=[TensorBoard(log_dir='/tmp/autoencoder')])
+
 decoded_imgs = autoencoder.predict(x_test)
 
 n = 10
