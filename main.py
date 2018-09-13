@@ -15,8 +15,6 @@ from datetime import datetime
 
 INIT_LR=1e-3
 EPOCHS=200
-
-
 autoencoder=model.makeModel()	
 #print(autoencoder.summary())
 
