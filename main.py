@@ -10,39 +10,43 @@ import pickle
 from sklearn.model_selection import train_test_split
 import cv2
 from keras.optimizers import Adam
+from keras.optimizers import RMSprop
 from datetime import datetime
 
 
 INIT_LR=1e-3
-EPOCHS=200
+EPOCHS=100
+BATCH_SIZE=64
 autoencoder=model.makeModel()	
 #print(autoencoder.summary())
 
 opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-autoencoder.compile(loss="binary_crossentropy", optimizer=opt,
-	metrics=["accuracy"])
+opt2=RMSprop(lr=INIT_LR, decay=0.0)
+autoencoder.compile(loss="mean_squared_error", optimizer = opt2)
 
-with open('data_arr.pickle','rb') as f:
+with open('data_gray_arr.pickle','rb') as f:
 	data=pickle.load(f)
 
-
-data = np.array(data, dtype="float") / 255.0
+data=np.array(data,dtype="float")/255.0
+#data = np.array(data, dtype="float") / 255.0
 #print(data[0])
 
-x_train,x_test,_,_=train_test_split(data,data,test_size=0.20, random_state=42)
+x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.2)
 
-autoencoder.fit(x_train, x_train,
+autoencoder.fit(x_train, y_train,
                 epochs=EPOCHS,
-                batch_size=64,
-                shuffle=True,
-                validation_data=(x_test, x_test),
-                callbacks=[TensorBoard(log_dir='/tmp/run4')])
+                batch_size=BATCH_SIZE,
+                validation_data=(x_test, y_test),
+                verbose=1,
+                callbacks=[TensorBoard(log_dir='/tmp/run5')]
+                )
 
 name='model-{}'.format(str(datetime.now()))
 autoencoder.save(name+'.h5')
 
 decoded_imgs=autoencoder.predict(x_test)
-decoded_imgs=255*decoded_imgs
+print(decoded_imgs[0])
+#decoded_imgs=255*decoded_imgs
 
 n = 10
 plt.figure(figsize=(20, 4))
@@ -56,8 +60,8 @@ for i in range(1,n):
 
     ax = plt.subplot(2, n, i + n)
     im=decoded_imgs[i].reshape(20,12)
-    ret,thresh_img = cv2.threshold(im,140,255,cv2.THRESH_BINARY)
-    plt.imshow(thresh_img)
+    #ret,thresh_img = cv2.threshold(im,140,255,cv2.THRESH_BINARY)
+    plt.imshow(im)
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
