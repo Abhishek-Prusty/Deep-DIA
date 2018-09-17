@@ -11,9 +11,9 @@ from keras import backend as K
 import pickle
 
 autoencoder=load_model('model-2018-09-17 05:17:06.590277.h5')
-print(autoencoder.layers)
+#print(autoencoder.layers)
 
-with open('temp_cluster.pickle','rb') as f:
+with open('temp_cluster2.pickle','rb') as f:
 	data=pickle.load(f)
 
 data=np.array(data,dtype="float")/255.0
@@ -31,11 +31,14 @@ x = Conv2D(16, (3, 3), padding='same',weights=autoencoder.layers[9].get_weights(
 x = BatchNormalization(weights=autoencoder.layers[10].get_weights())(x)
 x = Activation('relu')(x)
 encoded = MaxPooling2D((2, 2), padding='same')(x)
+
 model_new=Model(input_img,encoded)
 
 encoded=model_new.predict(data)
-print(encoded[0])
+encoded=encoded.reshape(encoded.shape[0],-1)
+print(encoded[0].shape)
 print(encoded.shape)
-with open('extracted_features.pickle','wb') as f:
+
+with open('extracted_features2.pickle','wb') as f:
 	pickle.dump(encoded,f) 
 
