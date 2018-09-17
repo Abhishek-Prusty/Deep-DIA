@@ -7,7 +7,7 @@ from keras.preprocessing.image import img_to_array
 from keras.preprocessing.image import load_img
 
 
-files = glob.glob ("Challenge-3-ForTrain/train_image/*.jpg")
+files = glob.glob ("clustering_data/*.jpg")
 files=sorted(files)
 count=0
 data=[]
@@ -20,7 +20,7 @@ for file in files:
 	data.append(image)
 
 #data = np.array(data, dtype="float") / 255.0
-with open('data_gray_arr.pickle','wb') as f:
+with open('temp_cluster.pickle','wb') as f:
 	pickle.dump(data,f) 
 
 print(data[0])

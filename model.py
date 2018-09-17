@@ -34,9 +34,8 @@ def makeModel():
 	x = BatchNormalization()(x)
 	decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
 
-
 	autoencoder = Model(input_img, decoded)
-	return autoencoder
+	return autoencoder 
 
 #auto=makeModel()
 #print(auto.summary())
