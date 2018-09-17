@@ -15,7 +15,7 @@ for file in files:
 	count+=1
 	print(count,"\n")
 	image = cv2.imread(file,0)
-	image = cv2.resize(image, (12, 20))
+	image = cv2.resize(image, (16, 24))
 	image = img_to_array(image)
 	data.append(image)
 

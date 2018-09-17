@@ -15,8 +15,8 @@ from datetime import datetime
 
 
 INIT_LR=1e-3
-EPOCHS=100
-BATCH_SIZE=64
+EPOCHS=80
+BATCH_SIZE=32
 autoencoder=model.makeModel()	
 #print(autoencoder.summary())
 
@@ -38,7 +38,7 @@ autoencoder.fit(x_train, y_train,
                 batch_size=BATCH_SIZE,
                 validation_data=(x_test, y_test),
                 verbose=1,
-                callbacks=[TensorBoard(log_dir='/tmp/run5')]
+                callbacks=[TensorBoard(log_dir='/tmp/run7')]
                 )
 
 name='model-{}'.format(str(datetime.now()))
@@ -53,13 +53,13 @@ plt.figure(figsize=(20, 4))
 for i in range(1,n):
 
     ax = plt.subplot(2, n, i)
-    plt.imshow(x_test[i].reshape(20,12))
+    plt.imshow(x_test[i].reshape(24,16))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
     ax = plt.subplot(2, n, i + n)
-    im=decoded_imgs[i].reshape(20,12)
+    im=decoded_imgs[i].reshape(24,16)
     #ret,thresh_img = cv2.threshold(im,140,255,cv2.THRESH_BINARY)
     plt.imshow(im)
     plt.gray()

@@ -18,8 +18,8 @@ image=cv2.imread(im_path,0)
 image = cv2.resize(image, (12, 20))
 #cv2.imshow('yo1',image)
 #ret,thresh_img = cv2.threshold(image,127,255,cv2.THRESH_BINARY)
-th=cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,15,2)
-thresh_img = img_to_array(th)
+#th=cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,15,2)
+thresh_img = img_to_array(image)
 thresh_img = np.array(thresh_img, dtype="float") / 255.0
 thresh_img=thresh_img[np.newaxis,:,:,:]
 
