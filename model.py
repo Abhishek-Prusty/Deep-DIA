@@ -1,6 +1,8 @@
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D,Dropout,BatchNormalization,Activation
 from keras.models import Model
 from keras import backend as K
+from keras_sequential_ascii import keras2ascii
+import netron
 
 def makeModel():
 
@@ -37,6 +39,6 @@ def makeModel():
 	autoencoder = Model(input_img, decoded)
 	return autoencoder 
 
-#auto=makeModel()
-#print(auto.summary())
+auto=makeModel()
+print(keras2ascii(auto))
 	

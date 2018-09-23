@@ -16,14 +16,33 @@ def atof(text):
     return retval
 
 def natural_keys(text):
-    return [ atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text) ]
+    return [ atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text)]
 
+files = glob.glob ("Challenge-3-ForTrain/train_image/*.jpg")
+files=sorted(files)
+#print(files)
 
-files = glob.glob ("clustering_data2/*.jpg")
-files.sort(key=natural_keys)
-print(files)
+img_names=[]
+labels=[]
+#file_label=glob.glob("Challenge-3-ForTrain/gt_train.txt")
+with open("Challenge-3-ForTrain/gt_train.txt",'r') as lab:
+	mapped=lab.readlines()
+
+code=0
+prev_name='0'
+for line in mapped:
+	name=line.split(';')
+	if(name[1]!=prev_name):
+		code=code+1
+	labels.append(code)
+	prev_name=name[1]
+
+print(mapped[:140])
+print(labels[:140])
+
 count=0
 data=[]
+
 for file in files:
 	count+=1
 	print(count,"\n")
@@ -33,8 +52,10 @@ for file in files:
 	data.append(image)
 
 
-#data = np.array(data, dtype="float") / 255.0
-with open('temp_cluster2.pickle','wb') as f:
+with open('data.pickle','wb') as f:
 	pickle.dump(data,f) 
 
-#print(data[0])
+with open('labels.pickle','wb') as f:
+	pickle.dump(labels,f) 
+print(data[0])
+print(labels)

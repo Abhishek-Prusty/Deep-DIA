@@ -13,7 +13,7 @@ import pickle
 autoencoder=load_model('model-2018-09-17 05:17:06.590277.h5')
 #print(autoencoder.layers)
 
-with open('temp_cluster2.pickle','rb') as f:
+with open('data.pickle','rb') as f:
 	data=pickle.load(f)
 
 data=np.array(data,dtype="float")/255.0
@@ -39,6 +39,6 @@ encoded=encoded.reshape(encoded.shape[0],-1)
 print(encoded[0].shape)
 print(encoded.shape)
 
-with open('extracted_features2.pickle','wb') as f:
+with open('features.pickle','wb') as f:
 	pickle.dump(encoded,f) 
 

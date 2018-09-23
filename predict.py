@@ -22,7 +22,7 @@ thresh_img = img_to_array(image)
 thresh_img = np.array(thresh_img, dtype="float") / 255.0
 thresh_img=thresh_img[np.newaxis,:,:,:]
 decoded_img=autoencoder.predict(thresh_img)
-print(decoded_img.shape)
+print(decoded_img.shape	)
 im=np.array(decoded_img.reshape(24,16))
 print(im.shape)
 
