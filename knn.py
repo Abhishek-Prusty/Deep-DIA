@@ -4,11 +4,10 @@ import pickle
 import matplotlib.pyplot as plt 
 from sklearn.decomposition import IncrementalPCA
 from sklearn import metrics
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split,StratifiedKFold
 from sklearn.preprocessing import StandardScaler  
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix
-from sklearn import cross_validation
 
 np.set_printoptions(threshold=np.nan)
 
@@ -19,18 +18,22 @@ with open('labels.pickle','rb') as f:
 	labels=pickle.load(f)
 
 labels=np.array(labels)
-X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.20,stratify=labels)  
+X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.20,stratify=labels,random_state=42)  
 
 scaler = StandardScaler()  
 scaler.fit(X_train)
 X_train = scaler.transform(X_train)  
 X_test = scaler.transform(X_test)  
 
-  
-classifier = KNeighborsClassifier(n_neighbors=5)  
+
+k=5
+classifier = KNeighborsClassifier(n_neighbors=k,metric='minkowski',algorithm='auto')  
 classifier.fit(X_train, y_train) 
 
 y_pred = classifier.predict(X_test) 
-  
-print(confusion_matrix(y_test, y_pred))  
+
+plt.figure(figsize=(20, 15))
+plt.imshow(np.array(confusion_matrix(y_test, y_pred)),cmap='gray')
+plt.savefig('confusion_mat_k'+str(k)+'.jpg')
+plt.show()  
 print(classification_report(y_test, y_pred)) 

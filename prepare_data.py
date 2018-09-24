@@ -37,8 +37,8 @@ for line in mapped:
 	labels.append(code)
 	prev_name=name[1]
 
-print(mapped[:140])
-print(labels[:140])
+#print(mapped[:140])
+#print(labels[:140])
 
 count=0
 data=[]
@@ -47,15 +47,19 @@ for file in files:
 	count+=1
 	print(count,"\n")
 	image = cv2.imread(file,0)
-	image = cv2.resize(image, (16, 24))
+	image=cv2.resize(image,(32,32))
 	image = img_to_array(image)
 	data.append(image)
 
+#data=np.array(data)
 
-with open('data.pickle','wb') as f:
+with open('data_32x32.pickle','wb') as f:
 	pickle.dump(data,f) 
 
 with open('labels.pickle','wb') as f:
 	pickle.dump(labels,f) 
-print(data[0])
-print(labels)
+
+
+
+#print(data.shape)
+#print(labels)

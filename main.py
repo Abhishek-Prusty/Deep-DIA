@@ -12,11 +12,12 @@ import cv2
 from keras.optimizers import Adam
 from keras.optimizers import RMSprop
 from datetime import datetime
+from keras.preprocessing.image import ImageDataGenerator
 
 
 INIT_LR=1e-3
 EPOCHS=80
-BATCH_SIZE=32
+BATCH_SIZE=64
 autoencoder=model.makeModel()	
 #print(autoencoder.summary())
 
@@ -24,21 +25,24 @@ opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
 opt2=RMSprop(lr=INIT_LR, decay=0.0)
 autoencoder.compile(loss="mean_squared_error", optimizer = opt2)
 
-with open('data_gray_arr.pickle','rb') as f:
+with open('data_32x32.pickle','rb') as f:
 	data=pickle.load(f)
 
-data=np.array(data,dtype="float")/255.0
-#data = np.array(data, dtype="float") / 255.0
-#print(data[0])
+
+#data=np.array(data,dtype="object")/255.0
+data = np.array(data, dtype="float") / 255.0
+print(data.shape)
+#print(data[:3])
 
 x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.2)
+
 
 autoencoder.fit(x_train, y_train,
                 epochs=EPOCHS,
                 batch_size=BATCH_SIZE,
                 validation_data=(x_test, y_test),
                 verbose=1,
-                callbacks=[TensorBoard(log_dir='/tmp/run7')]
+                callbacks=[TensorBoard(log_dir='/tmp/run14')]
                 )
 
 name='model-{}'.format(str(datetime.now()))
@@ -53,13 +57,13 @@ plt.figure(figsize=(20, 4))
 for i in range(1,n):
 
     ax = plt.subplot(2, n, i)
-    plt.imshow(x_test[i].reshape(24,16))
+    plt.imshow(x_test[i].reshape(32,32))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
     ax = plt.subplot(2, n, i + n)
-    im=decoded_imgs[i].reshape(24,16)
+    im=decoded_imgs[i].reshape(32,32)
     #ret,thresh_img = cv2.threshold(im,140,255,cv2.THRESH_BINARY)
     plt.imshow(im)
     plt.gray()
