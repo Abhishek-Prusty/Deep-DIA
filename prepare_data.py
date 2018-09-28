@@ -28,33 +28,41 @@ labels=[]
 with open("Challenge-3-ForTrain/gt_train.txt",'r') as lab:
 	mapped=lab.readlines()
 
+with open("Challenge-3-ForTrain/list_class_name.txt",'r') as lab:
+	names=lab.readlines()
+
+ct=0
+nos=[]
+d=dict()
+for name in names:
+	nm=name[:-1]
+	d[nm]=ct
+	ct=ct+1
+
+print((d.keys()))
 code=0
 prev_name='0'
-for line in mapped:
-	name=line.split(';')
-	if(name[1]!=prev_name):
-		code=code+1
-	labels.append(code)
-	prev_name=name[1]
+aaa=[]
+for mp in mapped:
+	name=mp.split(';')[1]
+	labels.append(d[name])
 
-#print(mapped[:140])
-#print(labels[:140])
+
 
 count=0
 data=[]
-
 for file in files:
 	count+=1
-	print(count,"\n")
+	#print(count,"\n")
 	image = cv2.imread(file,0)
-	image=cv2.resize(image,(32,32))
+	image=cv2.resize(image,(16,24))
 	image = img_to_array(image)
 	data.append(image)
 
 #data=np.array(data)
-
-with open('data_32x32.pickle','wb') as f:
+with open('data.pickle','wb') as f:
 	pickle.dump(data,f) 
+
 
 with open('labels.pickle','wb') as f:
 	pickle.dump(labels,f) 

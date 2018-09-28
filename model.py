@@ -6,7 +6,7 @@ import netron
 
 def makeModel():
 
-	input_img = Input(shape=(32, 32, 1))
+	input_img = Input(shape=(24, 16, 1))
 	x = Conv2D(64, (3, 3), padding='same')(input_img)
 	x = BatchNormalization()(x)
 	x = Activation('relu')(x)
@@ -18,21 +18,9 @@ def makeModel():
 	x = Conv2D(16, (3, 3), padding='same')(x)
 	x = BatchNormalization()(x)
 	x = Activation('relu')(x)
-
-	x = MaxPooling2D((2, 2), padding='same')(x)
-	x = Conv2D(8, (3, 3), padding='same')(x)
-	x = BatchNormalization()(x)
-	x = Activation('relu')(x)
-
 	encoded = MaxPooling2D((2, 2), padding='same')(x)
-	#print(encoded.shape)
-
-	x = Conv2D(8, (3, 3), padding='same')(encoded)
-	x = BatchNormalization()(x)
-	x = Activation('relu')(x)
-	x = UpSampling2D((2, 2))(x)
-
-	x = Conv2D(16, (3, 3), padding='same')(x)
+ 
+	x = Conv2D(16, (3, 3), padding='same')(encoded)
 	x = BatchNormalization()(x)
 	x = Activation('relu')(x)
 	x = UpSampling2D((2, 2))(x)
@@ -46,8 +34,8 @@ def makeModel():
 	x = UpSampling2D((2, 2))(x)
 	x = Conv2D(3, (3, 3), padding='same')(x)
 	x = BatchNormalization()(x)
-
 	decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+ 
 	autoencoder = Model(input_img, decoded)
 	return autoencoder 
 
