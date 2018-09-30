@@ -22,14 +22,13 @@ BATCH_SIZE=64
 autoencoder=model.makeModel()	
 #print(autoencoder.summary())
 
-opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-opt2=RMSprop(lr=INIT_LR, decay=1e-4)
+opt2=RMSprop(lr=INIT_LR, decay=1e-6)
 autoencoder.compile(loss="mean_squared_error", optimizer = opt2)
 
-with open('data.pickle','rb') as f:
+with open('data1.pickle','rb') as f:
 	data=pickle.load(f)
 
-with open('labels.pickle','rb') as f:
+with open('labels1.pickle','rb') as f:
     labels=pickle.load(f)
 
 #####
@@ -41,24 +40,26 @@ data = np.array(data, dtype="float") / 255.0
 #print(data[:3])
 #print(len(labels))
 
-x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.2)
+x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.1)
 
 class_weights = class_weight.compute_class_weight('balanced',
                                                  np.unique(labels),
                                                  labels)
 
 
-#print(len(class_weights))
-#print((class_weights))
-
+class_weights_dict = dict(zip(np.unique(labels), class_weights))
+#print(class_weights_dict)
+cl=[]
+for i in labels:
+    cl.append(class_weights_dict[i])
+cl=np.array(cl)
 
 autoencoder.fit(x_train, y_train,
                 epochs=EPOCHS,
                 batch_size=BATCH_SIZE,
                 validation_data=(x_test, y_test),
                 verbose=1,
-                callbacks=[TensorBoard(log_dir='/tmp/run17')],
-                class_weight=class_weights
+                callbacks=[TensorBoard(log_dir='/tmp/run18')]
                 )
 
 name='model-{}'.format(str(datetime.now()))
