@@ -38,10 +38,12 @@ ct=0
 nos=[]
 d=dict()
 dno=dict()
+dno2=dict()
 for name in names:
 	nm=name.strip('\n')
 	d[nm]=ct
 	dno[nm]=int(no[ct].strip('\n'))
+	dno2[nm]=int(no[ct].strip('\n'))
 	ct=ct+1
 
 
@@ -53,18 +55,24 @@ prev_name='0'
 aaa=[]
 for mp in mapped:
 	name=mp.split(';')[1]
+	pres=dno[name]
+	ex=200-pres
+	for i in range(ex):
+		labels.append(d[name])
+	dno[name]=200
 	labels.append(d[name])
+
 print(np.unique(labels))
-
-
+print(len(labels))
 count=0
 data=[]
+print(dno2)
 for file in files:
 	count+=1
 	nmm=file.split('/')[2]
 	nmm=nmm.split('.')[0]
 	nmm=nmm.split('_')[0]
-	pres=dno[nmm]
+	pres=dno2[nmm]
 	#print(pres)
 	ex=200-pres
 	#print(file,"\n")
@@ -74,9 +82,11 @@ for file in files:
 	data.append(image)
 	for i in range(ex):
 		data.append(image)
-	dno[nmm]=200
+	dno2[nmm]=200
 
 print(len(data))
+print(labels)
+
 #data=np.array(data)
 with open('data1.pickle','wb') as f:
 	pickle.dump(data,f) 

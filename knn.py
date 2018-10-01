@@ -11,10 +11,10 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 np.set_printoptions(threshold=np.nan)
 
-with open('features_balanced.pickle','rb') as f:
+with open('features_balanced1.pickle','rb') as f:
 	data=pickle.load(f)
 
-with open('labels.pickle','rb') as f:
+with open('labels1.pickle','rb') as f:
 	labels=pickle.load(f)
 
 labels=np.array(labels)
@@ -26,7 +26,7 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)  
 
 
-k=5
+k=7
 classifier = KNeighborsClassifier(n_neighbors=k,metric='minkowski',algorithm='auto')  
 classifier.fit(X_train, y_train) 
 
@@ -34,6 +34,6 @@ y_pred = classifier.predict(X_test)
 
 plt.figure(figsize=(20, 15))
 plt.imshow(np.array(confusion_matrix(y_test, y_pred)),cmap='gray')
-plt.savefig('confusion_balanced_k'+str(k)+'.jpg')
+plt.savefig('confusion_balanced1_k'+str(k)+'.jpg')
 plt.show()  
 print(classification_report(y_test, y_pred)) 

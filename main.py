@@ -18,7 +18,7 @@ from sklearn.utils import class_weight
 
 INIT_LR=1e-3
 EPOCHS=100
-BATCH_SIZE=64
+BATCH_SIZE=256
 autoencoder=model.makeModel()	
 #print(autoencoder.summary())
 
@@ -59,7 +59,7 @@ autoencoder.fit(x_train, y_train,
                 batch_size=BATCH_SIZE,
                 validation_data=(x_test, y_test),
                 verbose=1,
-                callbacks=[TensorBoard(log_dir='/tmp/run18')]
+                callbacks=[TensorBoard(log_dir='/tmp/run20')]
                 )
 
 name='model-{}'.format(str(datetime.now()))
