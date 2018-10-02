@@ -14,10 +14,14 @@ from keras.optimizers import RMSprop
 from datetime import datetime
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.utils import class_weight
+from itertools import cycle
+import glob
+from keras.preprocessing.image import img_to_array
+from keras.preprocessing.image import load_img
 
 
 INIT_LR=1e-3
-EPOCHS=100
+EPOCHS=10
 BATCH_SIZE=256
 autoencoder=model.makeModel()	
 #print(autoencoder.summary())
@@ -32,7 +36,11 @@ with open('labels1.pickle','rb') as f:
     labels=pickle.load(f)
 
 #####
+files = glob.glob ("Challenge-3-ForTrain/train_image/*.jpg")
+files=sorted(files)
 
+files2 = glob.glob ("Challenge-3-ForTest/test_image_random/*.jpg")
+files2=sorted(files2)
 
 data = np.array(data, dtype="float") / 255.0
 #print(data.shape)
@@ -42,18 +50,61 @@ data = np.array(data, dtype="float") / 255.0
 
 x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.1)
 
-class_weights = class_weight.compute_class_weight('balanced',
-                                                 np.unique(labels),
-                                                 labels)
+def next_power_of_2(x):  
+    return 1 if x == 0 else 2**(x - 1).bit_length()
+
+def imageLoader(files, batch_size=1):
+
+    L = len(files)    
+    while True:
+
+        batch_start = 0
+        batch_end = batch_size
+
+        while batch_start < L:
+            limit = min(batch_end, L)
+            file=files[batch_start:limit][0]
+            image = cv2.imread(file,0)
+            image = img_to_array(image)
+            X=image
+            X=np.array(X)
+            a=next_power_of_2(X.shape[0])
+            b=next_power_of_2(X.shape[1])
+
+            result = np.zeros((a,b))
+            a=a-X.shape[0]
+            b=b-X.shape[1]
+            x_offset = a  
+            y_offset = b  
+            X=X.reshape((X.shape[0],X.shape[1]))
+            result[x_offset:X.shape[0]+x_offset,y_offset:X.shape[1]+y_offset] = X
+            X=np.array(result)
+            X=X.reshape((X.shape[0],X.shape[1],1))
+            X = X.reshape((1,)+X.shape)
+            #print(X.shape)
+            X=np.array(X, dtype="float") / 255.0
+            #print(len(X))
+            yield (X,X)   
+
+            batch_start += batch_size   
+            batch_end += batch_size
 
 
-class_weights_dict = dict(zip(np.unique(labels), class_weights))
-#print(class_weights_dict)
-cl=[]
-for i in labels:
-    cl.append(class_weights_dict[i])
-cl=np.array(cl)
+print(len(files))
+print(len(files2))
 
+hist = autoencoder.fit_generator(
+                imageLoader(files,1),
+                epochs=EPOCHS,
+                steps_per_epoch=len(files),
+                verbose=1,
+                validation_data=imageLoader(files2,1),
+                validation_steps=len(files2),
+                callbacks=[TensorBoard(log_dir='/tmp/run23')]
+                )
+
+
+'''
 autoencoder.fit(x_train, y_train,
                 epochs=EPOCHS,
                 batch_size=BATCH_SIZE,
@@ -61,7 +112,7 @@ autoencoder.fit(x_train, y_train,
                 verbose=1,
                 callbacks=[TensorBoard(log_dir='/tmp/run20')]
                 )
-
+'''
 name='model-{}'.format(str(datetime.now()))
 autoencoder.save(name+'.h5')
 
@@ -74,13 +125,13 @@ plt.figure(figsize=(20, 4))
 for i in range(1,n):
 
     ax = plt.subplot(2, n, i)
-    plt.imshow(x_test[i].reshape(24,16))
+    plt.imshow(x_test[i])
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
     ax = plt.subplot(2, n, i + n)
-    im=decoded_imgs[i].reshape(24,16)
+    im=decoded_imgs[i]
     #ret,thresh_img = cv2.threshold(im,140,255,cv2.THRESH_BINARY)
     plt.imshow(im)
     plt.gray()

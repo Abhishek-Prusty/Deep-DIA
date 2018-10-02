@@ -10,10 +10,10 @@ from keras.models import Model
 from keras import backend as K
 import pickle
 
-autoencoder=load_model('model-2018-10-01 06:50:28.274972.h5')
+autoencoder=load_model('model-2018-10-02 08:05:04.388216.h5')
 #print(autoencoder.layers)
 
-with open('data1.pickle','rb') as f:
+with open('data2.pickle','rb') as f:
 	data=pickle.load(f)
 
 data=np.array(data,dtype="object")/255.0
@@ -39,6 +39,6 @@ encoded=encoded.reshape(encoded.shape[0],-1)
 print(encoded[0].shape)
 print(encoded.shape)
 
-with open('features_balanced1.pickle','wb') as f:
+with open('features_balanced_varsize.pickle','wb') as f:
 	pickle.dump(encoded,f) 
 

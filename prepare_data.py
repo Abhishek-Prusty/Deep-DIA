@@ -77,7 +77,7 @@ for file in files:
 	ex=200-pres
 	#print(file,"\n")
 	image = cv2.imread(file,0)
-	image=cv2.resize(image,(16,24))
+	image=cv2.resize(image,(48,48))
 	image = img_to_array(image)
 	data.append(image)
 	for i in range(ex):
@@ -88,11 +88,11 @@ print(len(data))
 print(labels)
 
 #data=np.array(data)
-with open('data1.pickle','wb') as f:
+with open('data2.pickle','wb') as f:
 	pickle.dump(data,f) 
 
 
-with open('labels1.pickle','wb') as f:
+with open('labels2.pickle','wb') as f:
 	pickle.dump(labels,f) 
 
 

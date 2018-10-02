@@ -6,7 +6,7 @@ import netron
 
 def makeModel():
 
-	input_img = Input(shape=(24, 16, 1))
+	input_img = Input(shape=(None, None, 1))
 	x = Conv2D(64, (3, 3), padding='same')(input_img)
 	x = BatchNormalization()(x)
 	x = Activation('relu')(x)
