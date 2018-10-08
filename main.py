@@ -26,11 +26,9 @@ def fixed_generator(generator):
         yield (batch, batch)
 
 INIT_LR=1e-3
-EPOCHS=100
+EPOCHS=60
 BATCH_SIZE=128
 SIZE=32
-
-
 
 
 autoencoder=model.makeModel()	
@@ -39,13 +37,13 @@ autoencoder=model.makeModel()
 opt2=RMSprop(lr=INIT_LR, decay=1e-6)
 autoencoder.compile(loss="mean_squared_error", optimizer = opt2)
 
-'''
+
 with open('data2.pickle','rb') as f:
 	data=pickle.load(f)
 
 with open('labels2.pickle','rb') as f:
     labels=pickle.load(f)
-'''
+
 #####
 
 files = glob.glob ("Challenge-3-ForTrain/train_image/*.jpg")
@@ -61,12 +59,15 @@ files2=sorted(files2)
 #print(data[:3])
 #print(len(labels))
 
-#x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.1)
+x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.1)
 
 train_folder="/home/abhishek/DeepDIA/Challenge-3-ForTrain/"
 test_folder="/home/abhishek/DeepDIA/Challenge-3-ForTest/"
 
 train_datagen = ImageDataGenerator(
+        featurewise_center=True, 
+        featurewise_std_normalization=True,
+        zca_whitening=True,
         rotation_range=10,
         width_shift_range=0.1,
         height_shift_range=0.1,
@@ -81,7 +82,7 @@ train_generator = train_datagen.flow_from_directory(
         train_folder,
         target_size=(SIZE, SIZE),
         batch_size=BATCH_SIZE,
-        shuffle=False,
+        shuffle=True,
         color_mode = "grayscale",
         class_mode=None)
 
@@ -90,7 +91,7 @@ validation_generator = test_datagen.flow_from_directory(
         target_size=(SIZE, SIZE),
         batch_size=BATCH_SIZE,
         color_mode = "grayscale",
-        shuffle=False,
+        shuffle=True,
         class_mode=None)
 
 
@@ -146,7 +147,7 @@ hist = autoencoder.fit_generator(
                 verbose=1,
                 validation_data=fixed_generator(validation_generator),
                 validation_steps=len(files2)//BATCH_SIZE,
-                callbacks=[TensorBoard(log_dir='/tmp/run25')]
+                callbacks=[TensorBoard(log_dir='/tmp/run26')]
                 )
 '''
 
