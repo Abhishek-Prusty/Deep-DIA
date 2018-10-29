@@ -3,6 +3,7 @@ from keras.models import Model
 from keras import backend as K
 from keras_sequential_ascii import keras2ascii
 import netron
+from keras.utils import plot_model
 
 def makeModel():
 
@@ -40,5 +41,6 @@ def makeModel():
 	return autoencoder 
 
 #auto=makeModel()
+#plot_model(auto, show_shapes=True,show_layer_names=True,to_file='model.png')
 #print(keras2ascii(auto))
 	

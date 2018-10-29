@@ -14,10 +14,10 @@ from sklearn.metrics import precision_recall_fscore_support as score
 
 np.set_printoptions(threshold=np.nan)
 
-with open('features_augmented.pickle','rb') as f:
+with open('features.pickle','rb') as f:
 	data=pickle.load(f)
 
-with open('labels3.pickle','rb') as f:
+with open('bal_labels.pickle','rb') as f:
 	labels=pickle.load(f)
 
 
@@ -31,25 +31,32 @@ scaler.fit(X_train)
 X_train = scaler.transform(X_train)  
 X_test = scaler.transform(X_test)  
 
-k=5
-classifier = KNeighborsClassifier(n_neighbors=k,metric='euclidean',algorithm='auto')  
-classifier.fit(X_train, y_train) 
+res=[]
+ks=[]
+for k in range(3,14,2):
+	classifier = KNeighborsClassifier(n_neighbors=k,metric='euclidean',algorithm='auto')  
+	classifier.fit(X_train, y_train) 
+	y_pred = classifier.predict(X_test) 
 
-y_pred = classifier.predict(X_test) 
+	#plt.figure(figsize=(20, 15))
+	#cm=np.array(confusion_matrix(y_test, y_pred))
+	#plt.imshow(cm,interpolation='none',cmap='plasma')
+	#plt.colorbar()
 
-plt.figure(figsize=(20, 15))
-
-cm=np.array(confusion_matrix(y_test, y_pred))
-
-
-plt.imshow(cm,interpolation='none',cmap='plasma')
-plt.colorbar()
-
-plt.savefig('confusion_augmented_k'+str(k)+'.jpg') 
-plt.show() 
-print(classification_report(y_test, y_pred))
-#dy=classification_report(y_test, y_pred , output_dict=True)
-#print(dy)
-precision,recall,fscore,support=score(y_test,y_pred,average='macro')
-print(precision,recall,fscore,support)
+	#plt.savefig('confusion_augmented2_k'+str(k)+'.jpg') 
+	#plt.show() 
+	#print(classification_report(y_test, y_pred))
+	#dy=classification_report(y_test, y_pred , output_dict=True)
+	#print(dy)
+	print(k)
+	precision,recall,fscore,support=score(y_test,y_pred,average='macro')
+	res.append(fscore)
+	ks.append(k)
+	print(precision,recall,fscore,support)
 #print(np.array(confusion_matrix(y_test, y_pred)).tolist()) 
+
+plt.plot(ks,res)
+plt.xlabel('k')
+plt.ylabel('f-score')
+plt.savefig('knn_plot.png')
+plt.show()

@@ -12,10 +12,10 @@ ap.add_argument("-i", "--image", required=True,
 args = vars(ap.parse_args())
 im_path=args["image"]
 
-autoencoder=load_model('model-2018-09-17 05:17:06.590277.h5')
+autoencoder=load_model('model-2018-10-09 03:37:12.591428.h5')
 
 image=cv2.imread(im_path,0)
-image = cv2.resize(image, (16, 24))
+image = cv2.resize(image, (32, 32))
 thresh_img = img_to_array(image)
 
 
@@ -23,7 +23,7 @@ thresh_img = np.array(thresh_img, dtype="float") / 255.0
 thresh_img=thresh_img[np.newaxis,:,:,:]
 decoded_img=autoencoder.predict(thresh_img)
 print(decoded_img.shape	)
-im=np.array(decoded_img.reshape(24,16))
+im=np.array(decoded_img.reshape(32,32))
 print(im.shape)
 
 plt.subplot(1,2,1)
@@ -32,5 +32,6 @@ plt.gray()
 
 plt.subplot(1,2,2)
 plt.imshow(im)
+plt.savefig(im_path.split('/')[2])
 plt.gray()
 plt.show()

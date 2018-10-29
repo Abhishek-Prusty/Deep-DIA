@@ -19,7 +19,8 @@ import glob
 from keras.preprocessing.image import img_to_array
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import ImageDataGenerator
-
+import statistics
+from collections import Counter
 
 def fixed_generator(generator):
     for batch in generator:
@@ -27,7 +28,7 @@ def fixed_generator(generator):
 
 INIT_LR=1e-3
 EPOCHS=60
-BATCH_SIZE=128
+BATCH_SIZE=64
 SIZE=32
 
 
@@ -38,61 +39,71 @@ opt2=RMSprop(lr=INIT_LR, decay=1e-6)
 autoencoder.compile(loss="mean_squared_error", optimizer = opt2)
 
 
-with open('data2.pickle','rb') as f:
+with open('final_data.pickle','rb') as f:
 	data=pickle.load(f)
 
-with open('labels2.pickle','rb') as f:
+with open('final_labels.pickle','rb') as f:
     labels=pickle.load(f)
 
 #####
+print(data.shape)
+print(labels.shape)                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 
-files = glob.glob ("Challenge-3-ForTrain/train_image/*.jpg")
-files=sorted(files)
-
-files2 = glob.glob ("Challenge-3-ForTest/test_image_random/*.jpg")
-files2=sorted(files2)
+data=np.array(data)
+labels=np.array(labels)
 
 
-#data = np.array(data, dtype="float") / 255.0
+#print(class_weights)
+
+# files = glob.glob ("Challenge-3-ForTrain/train_image/*.jpg")
+# files=sorted(files)
+
+# files2 = glob.glob ("Challenge-3-ForTest/test_image_random/*.jpg")
+# files2=sorted(files2)
+
+
+data = np.array(data, dtype="float") / 255.0
 #print(data.shape)
 
 #print(data[:3])
 #print(len(labels))
 
-x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.1)
+x_train,x_test,y_train,y_test=train_test_split(data,data,test_size=0.1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ,stratify=labels)
 
-train_folder="/home/abhishek/DeepDIA/Challenge-3-ForTrain/"
-test_folder="/home/abhishek/DeepDIA/Challenge-3-ForTest/"
 
-train_datagen = ImageDataGenerator(
-        featurewise_center=True, 
-        featurewise_std_normalization=True,
-        zca_whitening=True,
-        rotation_range=10,
-        width_shift_range=0.1,
-        height_shift_range=0.1,
-        rescale=1./255,
-        shear_range=0.2,
-        zoom_range=0.2,
-        fill_mode='nearest')
+# train_folder="/home/abhishek/DeepDIA/Challenge-3-ForTrain/"
+# test_folder="/home/abhishek/DeepDIA/Challenge-3-ForTest/"
 
-test_datagen = ImageDataGenerator(rescale=1./255)
+# train_datagen = ImageDataGenerator(
+#         samplewise_center=True, 
+#         samplewise_std_normalization=True,
+#         rotation_range=10,
+#         width_shift_range=0.1,
+#         height_shift_range=0.1,
+#         rescale=1./255,
+#         shear_range=0.2,
+#         zoom_range=0.2,
+#         fill_mode='nearest')
 
-train_generator = train_datagen.flow_from_directory(
-        train_folder,
-        target_size=(SIZE, SIZE),
-        batch_size=BATCH_SIZE,
-        shuffle=True,
-        color_mode = "grayscale",
-        class_mode=None)
+# test_datagen = ImageDataGenerator(rescale=1./255)
 
-validation_generator = test_datagen.flow_from_directory(
-        test_folder,
-        target_size=(SIZE, SIZE),
-        batch_size=BATCH_SIZE,
-        color_mode = "grayscale",
-        shuffle=True,
-        class_mode=None)
+# train_datagen.fit(x_train)
+
+# train_generator = train_datagen.flow_from_directory(
+#         train_folder,
+#         target_size=(SIZE, SIZE),
+#         batch_size=BATCH_SIZE,
+#         shuffle=True,
+#         color_mode = "grayscale",
+#         class_mode=None)                                                                                                                                                                                                                                                                                                                                                                                                                                       
+
+# validation_generator = test_datagen.flow_from_directory(
+#         test_folder,
+#         target_size=(SIZE, SIZE),
+#         batch_size=BATCH_SIZE,
+#         color_mode = "grayscale",
+#         shuffle=True,
+#         class_mode=None)
 
 
 
@@ -140,16 +151,15 @@ def imageLoader(files, batch_size=1):
 #print(len(files2))
 
 
-hist = autoencoder.fit_generator(
-                fixed_generator(train_generator),
-                epochs=EPOCHS,
-                steps_per_epoch=len(files)//BATCH_SIZE,
-                verbose=1,
-                validation_data=fixed_generator(validation_generator),
-                validation_steps=len(files2)//BATCH_SIZE,
-                callbacks=[TensorBoard(log_dir='/tmp/run26')]
-                )
-'''
+# hist = autoencoder.fit_generator(
+#                 fixed_generator(train_generator),
+#                 epochs=EPOCHS,
+#                 steps_per_epoch=len(files)//BATCH_SIZE,
+#                 verbose=1,
+#                 validation_data=fixed_generator(validation_generator),
+#                 validation_steps=len(files2)//BATCH_SIZE,
+#                 callbacks=[TensorBoard(log_dir='/tmp/run27')]
+#                 )
 
 
 autoencoder.fit(x_train, y_train,
@@ -157,9 +167,8 @@ autoencoder.fit(x_train, y_train,
                 batch_size=BATCH_SIZE,
                 validation_data=(x_test, y_test),
                 verbose=1,
-                callbacks=[TensorBoard(log_dir='/tmp/run20')]
                 )
-'''
+# callbacks=[TensorBoard(log_dir='/tmp/run30')]
 
 name='model-{}'.format(str(datetime.now()))
 autoencoder.save(name+'.h5')

@@ -88,14 +88,16 @@ print(len(data))
 print(labels)
 
 #data=np.array(data)
-with open('data3.pickle','wb') as f:
+with open('khmer_data.pickle','wb') as f:
 	pickle.dump(data,f) 
 
 
-with open('labels3.pickle','wb') as f:
+with open('khmer_labels.pickle','wb') as f:
 	pickle.dump(labels,f) 
 
-
-
+data=np.array(data)
+labels=np.array(labels)
+print(data.shape)
+print(labels.shape)
 #print(data.shape)
 #print(labels)
