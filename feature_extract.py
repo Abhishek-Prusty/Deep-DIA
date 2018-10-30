@@ -10,10 +10,15 @@ from keras.models import Model
 from keras import backend as K
 import pickle
 
-autoencoder=load_model('model-2018-10-09 03:37:12.591428.h5')
+import h5py
+
+f = h5py.File('output.h5', 'r')
+print(f.attrs.get('keras_version'))
+autoencoder=load_model('output.h5')
+
 #print(autoencoder.layers)
 
-with open('bal_data.pickle','rb') as f:
+with open('final_data.pickle','rb') as f:
 	data=pickle.load(f)
 
 data=np.array(data,dtype="object")/255.0
@@ -39,6 +44,7 @@ encoded=encoded.reshape(encoded.shape[0],-1)
 print(encoded[0].shape)
 print(encoded.shape)
 
-with open('features.pickle','wb') as f:
+with open('features_BCK.pickle','wb') as f:
 	pickle.dump(encoded,f) 
 
+print(encoded.shape)

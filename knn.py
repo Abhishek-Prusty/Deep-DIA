@@ -14,10 +14,10 @@ from sklearn.metrics import precision_recall_fscore_support as score
 
 np.set_printoptions(threshold=np.nan)
 
-with open('features.pickle','rb') as f:
+with open('features_BCK.pickle','rb') as f:
 	data=pickle.load(f)
 
-with open('bal_labels.pickle','rb') as f:
+with open('final_labels.pickle','rb') as f:
 	labels=pickle.load(f)
 
 

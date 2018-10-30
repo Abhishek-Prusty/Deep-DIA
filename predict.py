@@ -32,6 +32,7 @@ plt.gray()
 
 plt.subplot(1,2,2)
 plt.imshow(im)
-plt.savefig(im_path.split('/')[2])
+#plt.savefig(im_path.split('/')[2])
+plt.savefig(im_path.split('/')[1])
 plt.gray()
 plt.show()

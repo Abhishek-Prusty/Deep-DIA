@@ -49,39 +49,8 @@ count_dict=dict(Counter(labels))
 print(count_dict)
 print(final_data.shape)
 
-def balanced_subsample(x,y,subsample_size=1.0):
-
-    class_xs = []
-    min_elems = None
-
-    for yi in np.unique(y):
-        elems = x[(y == yi)]
-        class_xs.append((yi, elems))
-        if min_elems == None or elems.shape[0] < min_elems:
-            min_elems = elems.shape[0]
-
-    use_elems = min_elems
-    if subsample_size < 1:
-        use_elems = int(min_elems*subsample_size)
-
-    xs = []
-    ys = []
-
-    for ci,this_xs in class_xs:
-        if len(this_xs) > use_elems:
-            np.random.shuffle(this_xs)
-
-        x_ = this_xs[:use_elems]
-        y_ = np.empty(use_elems)
-        y_.fill(ci)
-
-        xs.append(x_)
-        ys.append(y_)
-
-    xs = np.concatenate(xs)
-    ys = np.concatenate(ys)
-
-    return xs,ys
+x=np.array([[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12],[13]])
+y=np.array([1,1,1,1,1,0,0,0,0,0,0,0,0,0])
 
 from numpy import unique
 from numpy import random 
@@ -117,11 +86,16 @@ def balanced_sample_maker(X, y, sample_size, random_seed=None):
 
     return (X[balanced_copy_idx, :], y[balanced_copy_idx], balanced_copy_idx)
 
+x,y,_=balanced_sample_maker(x,y,2)
+print(x)
+print(y)
 final_data,labels,aaa=balanced_sample_maker(final_data,labels,2000)
 # for lab in range(len(labels)):
 # 	if(count_dict[labels[lab]]<2000):
 # 		for i in range(2000-count_dict[labels[lab]]):
 # 			np.insert()
+
+
 
 count_dict=dict(Counter(labels))
 print(count_dict)
